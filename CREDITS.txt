@@ -1,0 +1,24 @@
+﻿CREDITS
+Emby External Player Launcher makes use of dynamically linked external libraries under the terms of their respective licenses.
+The copyrights of these libraries belong to their respective owners.
+You should have received a copy of the library licenses together with Emby External Player Launcher. If not, please see the links below.
+
+Emby.ApiClient
+Copyright (c) Media Browser http://mediabrowser.tv
+Licensed under the MIT License:
+https://raw.githubusercontent.com/MediaBrowser/Emby.ApiClient/master/LICENSE.md
+
+Json.NET
+Copyright (c) 2007 James Newton-King
+Licensed under the MIT License:
+https://raw.githubusercontent.com/JamesNK/Newtonsoft.Json/master/LICENSE.md
+
+Log4Net
+Copyright © 2004-2017 Apache Software Foundation
+Licensed under the Apache Software License, Version 2.0:
+http://www.apache.org/licenses/LICENSE-2.0.txt
+
+WebSocket4Net
+Copyright 2012 Kerry Jiang (kerry-jiang@hotmail.com)
+Licensed under the Apache Software License, Version 2.0:
+http://www.apache.org/licenses/LICENSE-2.0.txt
