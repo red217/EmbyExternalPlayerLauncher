@@ -25,7 +25,8 @@ else
 cp $releaseDir\*.dll $versionDir\
 cp "$releaseDir\Emby External Player Launcher.exe" $versionDir\
 cp $releaseDir\log4net.xml $versionDir\
-cp *.md $versionDir
+cp *.txt $versionDir
+cp README.md $versionDir
 
 Compress-Archive -Force -Path $versionDir\* -DestinationPath "dist\EmbyExternalPlayerLauncher-v$fileVer.zip"
 echo Done
