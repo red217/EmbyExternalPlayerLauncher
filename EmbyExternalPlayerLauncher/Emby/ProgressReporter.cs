@@ -49,6 +49,10 @@ namespace EmbyExternalPlayerLauncher.Emby
 
             log.Debug("Creating and starting ProgressReporter.");
             reporterThread = new Thread(new ThreadStart(ReportEmbyStatus));
+        }
+
+        public void Start()
+        {
             reporterThread.Start();
         }
 
