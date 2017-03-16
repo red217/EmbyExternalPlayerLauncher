@@ -275,6 +275,7 @@ namespace EmbyExternalPlayerLauncher.Emby
 
                     progressReporter = new ProgressReporter(client, player, 1000, playingId);
                     progressReporter.PlayerStopped += ProgressReporter_PlayerStopped;
+                    progressReporter.Start();
                     log.Debug("ProgressReporter started.");
                 }
                 else
