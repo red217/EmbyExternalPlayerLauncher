@@ -17,11 +17,12 @@
  *  along with Emby External Player Launcher.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Emby.ApiInteraction;
-using Emby.ApiInteraction.Cryptography;
-using Emby.ApiInteraction.Net;
-using Emby.ApiInteraction.WebSocket;
-using EmbyExternalPlayerLauncher.Emby.Logging;
+using Emby.ApiClient;
+using Emby.ApiClient.Cryptography;
+using Emby.ApiClient.Model;
+using Emby.ApiClient.Net;
+using Emby.ApiClient.WebSocket;
+using EmbyExternalPlayerLauncher.ServerConnect.Logging;
 using EmbyExternalPlayerLauncher.Players;
 using log4net;
 using MediaBrowser.Model.ApiClient;
@@ -32,7 +33,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace EmbyExternalPlayerLauncher.Emby
+namespace EmbyExternalPlayerLauncher.ServerConnect
 {
     public class EmbyPlayerConnector
     {
@@ -94,32 +95,40 @@ namespace EmbyExternalPlayerLauncher.Emby
 
             var clientCapabilities = new ClientCapabilities
             {
-                PlayableMediaTypes = new List<string> { "Video" },
+                PlayableMediaTypes = new string[] { "Video" },
                 SupportsContentUploading = false,
-                SupportsOfflineAccess = false,
                 SupportsPersistentIdentifier = false,
                 SupportsSync = false,
                 SupportsMediaControl = true,
-                SupportedCommands = new List<string> { "Play", "Playstate", "VolumeUp", "VolumeDown", "SetVolume", "ToggleMute" }
+                SupportedCommands = new string[] { "Play", "Playstate", "VolumeUp", "VolumeDown", "SetVolume", "ToggleMute" }
             };
 
             conMgr = new ConnectionManager(
                 logger,
                 new SimpleCredentialProvider(),
                 new NetworkConnection(logger),
-                new ServerLocator(logger),
+                new Emby.ApiClient.ServerLocator(logger),
                 "Emby External Player Launcher",
                 Utils.ApplicationVersion,
                 device,
                 clientCapabilities,
                 new CryptographyProvider(),
                 ClientWebSocketFactory.CreateWebSocket);
+
+            //client = new ApiClient(
+            //    logger,
+            //    "http://10.23.45.2:8096",
+            //    "Emby External Player Launcher",
+            //    device,
+            //    Utils.ApplicationVersion,
+            //    new CryptographyProvider());
         }
 
         private async Task<bool> TryConnectEmby()
         {
             try
             {
+
                 var conRes = await (string.IsNullOrEmpty(EmbyAddress) ? conMgr.Connect() : conMgr.Connect(EmbyAddress));
 
                 if (conRes.State != ConnectionState.ServerSignIn)
@@ -128,7 +137,11 @@ namespace EmbyExternalPlayerLauncher.Emby
                     return false;
                 }
                 client = conRes.ApiClient;
+                
+
                 var authRes = await client.AuthenticateUserAsync(userName, password);
+                //await client.ReportCapabilities(clientCapabilities);
+                //client.OpenWebSocket(ClientWebSocketFactory.CreateWebSocket);
             }
             catch (Exception ex)
             {
@@ -240,6 +253,10 @@ namespace EmbyExternalPlayerLauncher.Emby
                         if (!player.Stop())
                             log.Error("Player Stop command failed.");
                         break;
+                    case PlaystateCommand.PlayPause:
+                        if (!player.PlayPause())
+                            log.Error("Player PlayPause command failed.");
+                        break;
                 }
             }
             catch (Exception ex)
@@ -248,7 +265,7 @@ namespace EmbyExternalPlayerLauncher.Emby
             }
         }
 
-        private void Client_PlayCommand(object sender, MediaBrowser.Model.Events.GenericEventArgs<PlayRequest> e)
+        private async void Client_PlayCommand(object sender, MediaBrowser.Model.Events.GenericEventArgs<PlayRequest> e)
         {
             try
             {
@@ -261,9 +278,10 @@ namespace EmbyExternalPlayerLauncher.Emby
 
                 var playReq = e.Argument;
                 var playingId = playReq.ItemIds[0]; //only playing 1 item is currently supported
-                playingItem = client.GetItemAsync(playingId, playReq.ControllingUserId).GetAwaiter().GetResult();
+                playingItem = await client.GetItemAsync(playingId, playReq.ControllingUserId);
+              
                 log.InfoFormat("Playing \"{0}\" from \"{1}\"", playingItem.Name, playingItem.Path);
-                if (player.Play(playingItem.Path, playingItem.ResumePositionTicks))
+                if (player.Play(playingItem.Path, playingItem.UserData.PlaybackPositionTicks))
                 {
                     log.Debug("Playback started.");
                     client.ReportPlaybackStartAsync(new PlaybackStartInfo

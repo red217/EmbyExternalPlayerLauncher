@@ -115,6 +115,15 @@ namespace EmbyExternalPlayerLauncher.Players.MpcHc
             });
         }
 
+        public bool PlayPause()
+        {
+            log.Debug("MPC-HC PlayPause");
+            return MpcHcPostCommand(new Dictionary<string, string>
+            {
+                { MpcHcCommands.PostCommandName, MpcHcCommands.PlayPause }
+            });
+        }
+
         public bool Play(string filePath, long embyStartTicks = 0)
         {
             log.DebugFormat("MPC-HC Play: {0}", filePath);

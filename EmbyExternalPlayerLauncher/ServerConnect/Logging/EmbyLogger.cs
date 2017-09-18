@@ -22,7 +22,7 @@ using MediaBrowser.Model.Logging;
 using System;
 using System.Text;
 
-namespace EmbyExternalPlayerLauncher.Emby.Logging
+namespace EmbyExternalPlayerLauncher.ServerConnect.Logging
 {
     public class EmbyLogger : ILogger
     {

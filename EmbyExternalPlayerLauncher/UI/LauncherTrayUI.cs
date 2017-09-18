@@ -18,7 +18,7 @@
  */
 
 using EmbyExternalPlayerLauncher.Config;
-using EmbyExternalPlayerLauncher.Emby;
+using EmbyExternalPlayerLauncher.ServerConnect;
 using EmbyExternalPlayerLauncher.Players.MpcHc;
 using EmbyExternalPlayerLauncher.Properties;
 using log4net;
