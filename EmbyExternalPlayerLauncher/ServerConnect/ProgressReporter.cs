@@ -66,6 +66,7 @@ namespace EmbyExternalPlayerLauncher.ServerConnect
                 stop = true;
                 Monitor.Pulse(monitor);
             }
+            reporterThread.Join();
         }
 
         private void ReportEmbyStatus()

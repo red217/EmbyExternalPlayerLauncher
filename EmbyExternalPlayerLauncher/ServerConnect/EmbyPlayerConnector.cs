@@ -30,7 +30,6 @@ using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Session;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace EmbyExternalPlayerLauncher.ServerConnect
@@ -78,9 +77,9 @@ namespace EmbyExternalPlayerLauncher.ServerConnect
             // it could be still active if the connector is stopped while playing
             log.Debug("Stopping Emby connector...");
             UnwireEmbyEvents();
+            progressReporter?.Stop();
             client?.Dispose();
             conMgr?.Dispose();
-            progressReporter?.Stop();
             log.Info("Emby connector stopped.");
         }
 
@@ -114,14 +113,6 @@ namespace EmbyExternalPlayerLauncher.ServerConnect
                 clientCapabilities,
                 new CryptographyProvider(),
                 ClientWebSocketFactory.CreateWebSocket);
-
-            //client = new ApiClient(
-            //    logger,
-            //    "http://10.23.45.2:8096",
-            //    "Emby External Player Launcher",
-            //    device,
-            //    Utils.ApplicationVersion,
-            //    new CryptographyProvider());
         }
 
         private async Task<bool> TryConnectEmby()
@@ -137,11 +128,8 @@ namespace EmbyExternalPlayerLauncher.ServerConnect
                     return false;
                 }
                 client = conRes.ApiClient;
-                
 
                 var authRes = await client.AuthenticateUserAsync(userName, password);
-                //await client.ReportCapabilities(clientCapabilities);
-                //client.OpenWebSocket(ClientWebSocketFactory.CreateWebSocket);
             }
             catch (Exception ex)
             {
