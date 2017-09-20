@@ -5,7 +5,7 @@
     <appender-ref ref="E2PL-Console"/>
     <appender-ref ref="E2PL-File"/>
   </root>
-  <logger name="EmbyExternalPlayerLauncher.Emby.Logging.EmbyLogger">
+  <logger name="EmbyExternalPlayerLauncher.ServerConnect.Logging.EmbyLogger">
     <level value="WARN"/>
   </logger>
   
