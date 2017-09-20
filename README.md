@@ -20,7 +20,7 @@ E2PL makes use of third-party libraries, please see `CREDITS.txt`
 Setup
 -----
 ### Requirements
-* Windows system with .NET Framework 4.5.2 installed
+* Windows system with .NET Framework 4.6.1 installed
 * MPC-HC should be installed
 * A functional Emby server installation somewhere on the local network
 * Direct access to the video files - either on the same system or over the network using shared files/folders combined with the Emby server's *Shared network folder* path substitution feature
