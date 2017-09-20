@@ -71,15 +71,15 @@ namespace EmbyExternalPlayerLauncher.ServerConnect
             return true;
         }
 
-        public void Stop()
+        public async void Stop()
         {
-            //TODO: should the progress reporter be stopped here or not?
-            // it could be still active if the connector is stopped while playing
             log.Debug("Stopping Emby connector...");
             UnwireEmbyEvents();
             progressReporter?.Stop();
-            client?.Dispose();
-            conMgr?.Dispose();
+            //using Task.Run because client.Dispose() seems to deadlock otherwise
+            //it's unclear why it happens at this point
+            await Task.Run(() => client?.Dispose());
+            await Task.Run(() => conMgr?.Dispose());
             log.Info("Emby connector stopped.");
         }
 
