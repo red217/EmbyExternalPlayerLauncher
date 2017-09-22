@@ -43,7 +43,7 @@ namespace EmbyExternalPlayerLauncher.ServerConnect
         private string userName;
         private string password;
 
-        private IApiClient client;
+        private ApiClient client;
         private ConnectionManager conMgr;
         private ILogger logger = new EmbyLogger();
 
@@ -81,6 +81,14 @@ namespace EmbyExternalPlayerLauncher.ServerConnect
             await Task.Run(() => client?.Dispose());
             await Task.Run(() => conMgr?.Dispose());
             log.Info("Emby connector stopped.");
+        }
+
+        public void CheckWebSocket()
+        {
+            var connected = client.IsWebSocketConnected;
+            log.DebugFormat("WebSocket Check: {0}", connected);
+            if (!connected)
+                client.OpenWebSocket();
         }
 
         private void InitConMgr()
@@ -127,7 +135,7 @@ namespace EmbyExternalPlayerLauncher.ServerConnect
                     log.ErrorFormat("Connect failed because server replied with unexpected ConnectionState: {0}", conRes.State);
                     return false;
                 }
-                client = conRes.ApiClient;
+                client = (ApiClient) conRes.ApiClient;
 
                 var authRes = await client.AuthenticateUserAsync(userName, password);
             }

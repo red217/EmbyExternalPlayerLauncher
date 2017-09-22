@@ -56,19 +56,19 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Emby.ApiClient, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Emby.ApiClient-master\Emby.ApiClient\bin\Release\net46\Emby.ApiClient.dll</HintPath>
+      <HintPath>..\packages\MediaBrowser.ApiClient.3.1.0\lib\net46\Emby.ApiClient.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="log4net, Version=2.0.7.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\packages\log4net.2.0.7\lib\net45-full\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="MediaBrowser.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MediaBrowser.Common.3.3.8-beta\lib\netstandard1.3\MediaBrowser.Common.dll</HintPath>
+      <HintPath>..\packages\MediaBrowser.Common.3.3.10\lib\netstandard1.3\MediaBrowser.Common.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="MediaBrowser.Model, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MediaBrowser.Common.3.3.8-beta\lib\netstandard1.3\MediaBrowser.Model.dll</HintPath>
+      <HintPath>..\packages\MediaBrowser.Common.3.3.10\lib\netstandard1.3\MediaBrowser.Model.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -89,6 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config\LauncherConfig.cs" />
+    <Compile Include="ServerConnect\AutoConnector.cs" />
     <Compile Include="ServerConnect\EmbyPlayerConnector.cs" />
     <Compile Include="ServerConnect\Logging\EmbyLogger.cs" />
     <Compile Include="ServerConnect\ProgressReporter.cs" />

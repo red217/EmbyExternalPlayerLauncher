@@ -28,19 +28,30 @@ namespace EmbyExternalPlayerLauncher.Config
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
+        //default values are here for ease of access & organizational purpose
+        public const string DefaultPlayerPath = "";
+        public const string DefaultPlayerArgs = "/play /fullscreen /start {s} /close";
+        public const string DefaultEmbyUser = "";
+        public const string DefaultEmbyPass = "";
+        public const string DefaultEmbyAddress = "";
+        public const int DefaultMpcHcPort = 13579;
+        public const int DefaultMpcHcWebTimeout = 2000;
+        public const int DefaultReconnectPeriod = 60000;
+
         private const string ConfigFolder = @"\Emby External Player Launcher";
         private const string ConfigFile = @"\e2pl.json";
         private static string fullFolderPath =
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)
             + ConfigFolder;
 
-        public string PlayerPath { get; set; }
-        public string PlayerArgs { get; set; }
-        public string EmbyUser { get; set; }
-        public string EmbyPass { get; set; }
-        public int MpcHcWebPort { get; set; }
-        public int MpcHcWebTimeout { get; set; }
-        public string EmbyAddress { get; set; }
+        public string PlayerPath { get; set; } = DefaultPlayerPath;
+        public string PlayerArgs { get; set; } = DefaultPlayerArgs;
+        public string EmbyUser { get; set; } = DefaultEmbyUser;
+        public string EmbyPass { get; set; } = DefaultEmbyPass;
+        public int MpcHcWebPort { get; set; } = DefaultMpcHcPort;
+        public int MpcHcWebTimeout { get; set; } = DefaultMpcHcWebTimeout;
+        public string EmbyAddress { get; set; } = DefaultEmbyAddress;
+        public int EmbyReconnectPeriod { get; set; } = DefaultReconnectPeriod;
 
         public static LauncherConfig ReadFromFile()
         {

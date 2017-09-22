@@ -48,6 +48,8 @@
             this.label7 = new System.Windows.Forms.Label();
             this.buttonOK = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
+            this.label8 = new System.Windows.Forms.Label();
+            this.textBoxReconnectPeriod = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // openFileDialogMpcHc
@@ -194,7 +196,7 @@
             // 
             // buttonOK
             // 
-            this.buttonOK.Location = new System.Drawing.Point(16, 309);
+            this.buttonOK.Location = new System.Drawing.Point(16, 328);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(200, 30);
             this.buttonOK.TabIndex = 16;
@@ -205,12 +207,28 @@
             // buttonCancel
             // 
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(231, 308);
+            this.buttonCancel.Location = new System.Drawing.Point(231, 327);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(200, 30);
             this.buttonCancel.TabIndex = 17;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(13, 302);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(235, 17);
+            this.label8.TabIndex = 18;
+            this.label8.Text = "Connection check/reconnect period:";
+            // 
+            // textBoxReconnectPeriod
+            // 
+            this.textBoxReconnectPeriod.Location = new System.Drawing.Point(254, 299);
+            this.textBoxReconnectPeriod.Name = "textBoxReconnectPeriod";
+            this.textBoxReconnectPeriod.Size = new System.Drawing.Size(176, 22);
+            this.textBoxReconnectPeriod.TabIndex = 19;
             // 
             // LauncherConfigForm
             // 
@@ -218,7 +236,9 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(443, 356);
+            this.ClientSize = new System.Drawing.Size(443, 370);
+            this.Controls.Add(this.textBoxReconnectPeriod);
+            this.Controls.Add(this.label8);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOK);
             this.Controls.Add(this.textBoxAddress);
@@ -267,5 +287,7 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Button buttonOK;
         private System.Windows.Forms.Button buttonCancel;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox textBoxReconnectPeriod;
     }
 }
