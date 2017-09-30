@@ -26,8 +26,6 @@ namespace EmbyExternalPlayerLauncher.UI
 {
     public partial class LauncherConfigForm : Form
     {
-        private const string DefaultArgs = "/play /fullscreen /start {s} /close";
-
         private LauncherConfig newConfig;
 
         public LauncherConfigForm(LauncherConfig config)
@@ -35,6 +33,8 @@ namespace EmbyExternalPlayerLauncher.UI
             InitializeComponent();
             if (config != null)
                 SetFromConfig(config);
+            else
+                SetDefaultConfig();
         }
 
         public LauncherConfig Config
@@ -45,12 +45,25 @@ namespace EmbyExternalPlayerLauncher.UI
         private void SetFromConfig(LauncherConfig config)
         {
             textBoxPath.Text = config.PlayerPath;
-            textBoxArgs.Text = string.IsNullOrEmpty(config.PlayerArgs) ? DefaultArgs : config.PlayerArgs;
+            textBoxArgs.Text = string.IsNullOrEmpty(config.PlayerArgs) ? LauncherConfig.DefaultPlayerArgs : config.PlayerArgs;
             textBoxPort.Text = config.MpcHcWebPort.ToString();
             textBoxTimeout.Text = config.MpcHcWebTimeout.ToString();
             textBoxUser.Text = config.EmbyUser;
             textBoxPassword.Text = config.EmbyPass;
             textBoxAddress.Text = config.EmbyAddress;
+            textBoxReconnectPeriod.Text = config.EmbyReconnectPeriod.ToString();
+        }
+
+        private void SetDefaultConfig()
+        {
+            textBoxPath.Text = LauncherConfig.DefaultPlayerPath;
+            textBoxArgs.Text = LauncherConfig.DefaultPlayerArgs;
+            textBoxPort.Text = LauncherConfig.DefaultMpcHcPort.ToString();
+            textBoxTimeout.Text = LauncherConfig.DefaultMpcHcWebTimeout.ToString();
+            textBoxUser.Text = LauncherConfig.DefaultEmbyUser;
+            textBoxPassword.Text = LauncherConfig.DefaultEmbyPass;
+            textBoxAddress.Text = LauncherConfig.DefaultEmbyAddress;
+            textBoxReconnectPeriod.Text = LauncherConfig.DefaultReconnectPeriod.ToString();
         }
 
         private bool ValidateFormSettings()
@@ -80,6 +93,13 @@ namespace EmbyExternalPlayerLauncher.UI
                 return false;
             }
 
+            int period;
+            if (!int.TryParse(textBoxReconnectPeriod.Text, out period) || period < 1)
+            {
+                MessageBox.Show("The reconnect period must be a positive integer.", "Invalid Reconnect Period", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return false;
+            }
+
             newConfig = new LauncherConfig
             {
                 EmbyAddress = textBoxAddress.Text,
@@ -88,7 +108,8 @@ namespace EmbyExternalPlayerLauncher.UI
                 MpcHcWebPort = port,
                 MpcHcWebTimeout = timeout,
                 PlayerArgs = textBoxArgs.Text,
-                PlayerPath = textBoxPath.Text
+                PlayerPath = textBoxPath.Text,
+                EmbyReconnectPeriod = period
             };
 
             return true;
@@ -107,7 +128,7 @@ namespace EmbyExternalPlayerLauncher.UI
 
         private void buttonDefaultArgs_Click(object sender, EventArgs e)
         {
-            textBoxArgs.Text = DefaultArgs;
+            textBoxArgs.Text = LauncherConfig.DefaultPlayerArgs;
         }
 
         private void buttonOK_Click(object sender, EventArgs e)

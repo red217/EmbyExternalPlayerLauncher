@@ -23,7 +23,8 @@ namespace EmbyExternalPlayerLauncher.Players
     {
         bool Play(string filePath, long embyStartTicks = 0);
         bool Pause();
-        bool Unpause();        
+        bool Unpause();
+        bool PlayPause();        
         bool Stop();
         bool Seek(long embyTicks);
         bool VolumeUp();

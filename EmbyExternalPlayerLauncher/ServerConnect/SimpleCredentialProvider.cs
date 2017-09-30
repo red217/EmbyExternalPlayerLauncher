@@ -17,11 +17,11 @@
  *  along with Emby External Player Launcher.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Emby.ApiInteraction;
+using Emby.ApiClient;
+using Emby.ApiClient.Model;
 using System.Threading.Tasks;
-using MediaBrowser.Model.ApiClient;
 
-namespace EmbyExternalPlayerLauncher.Emby
+namespace EmbyExternalPlayerLauncher.ServerConnect
 {
     public class SimpleCredentialProvider : ICredentialProvider
     {

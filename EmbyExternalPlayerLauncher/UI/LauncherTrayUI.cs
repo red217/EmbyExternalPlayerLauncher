@@ -18,7 +18,7 @@
  */
 
 using EmbyExternalPlayerLauncher.Config;
-using EmbyExternalPlayerLauncher.Emby;
+using EmbyExternalPlayerLauncher.ServerConnect;
 using EmbyExternalPlayerLauncher.Players.MpcHc;
 using EmbyExternalPlayerLauncher.Properties;
 using log4net;
@@ -36,7 +36,7 @@ namespace EmbyExternalPlayerLauncher.UI
         private ContextMenuStrip menu = new ContextMenuStrip();
         private LauncherConfig config;
 
-        private EmbyPlayerConnector connector;
+        private AutoConnector connector;
         private bool configFormOpen = false;
         private bool aboutFormOpen = false;
 
@@ -45,10 +45,10 @@ namespace EmbyExternalPlayerLauncher.UI
             this.config = config;
             CreateMenuStrip();
             CreateTrayIcon();
-            CreateEmbyConnector();
+            CreateAutoConnector();
         }
 
-        private bool CreateEmbyConnector()
+        private bool CreateAutoConnector()
         {
             if (config != null)
             {
@@ -57,24 +57,17 @@ namespace EmbyExternalPlayerLauncher.UI
                     config.PlayerArgs,
                     config.MpcHcWebPort,
                     config.MpcHcWebTimeout);
-                connector = new EmbyPlayerConnector(
-                    player,
-                    config.EmbyUser,
-                    config.EmbyPass,
-                    config.EmbyAddress);
 
-                //TODO: apparently causes a deadlock when running on the main/UI thread, investigate why
-                log.Info("Connecting to Emby Server...");
-                bool success = Task.Run(() => connector.Connect()).GetAwaiter().GetResult();
-                if (!success)
+                connector = new AutoConnector(player, config);
+                if (!connector.Start())
                 {
                     string msg = "Could not connect to Emby. Please check your settings.";
-                    trayIcon.Text = msg;
                     log.Error(msg);
+                    trayIcon.Text = msg;
                     Task.Run(() => MessageBox.Show(msg));
                     return false;
                 }
-                else trayIcon.Text = "Connected to " + connector.EmbyAddress;
+                else trayIcon.Text = "Emby External Player launcher has connected.";
 
             }
             else
@@ -146,7 +139,7 @@ namespace EmbyExternalPlayerLauncher.UI
                 config.SaveToFile();
                 connector?.Stop();
                 connector = null;
-                CreateEmbyConnector();
+                CreateAutoConnector();
             }
             configFormOpen = false;
         }

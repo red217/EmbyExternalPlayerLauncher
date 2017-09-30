@@ -17,6 +17,8 @@
  *  along with Emby External Player Launcher.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using Emby.ApiClient;
+using Emby.ApiClient.Model;
 using EmbyExternalPlayerLauncher.Players;
 using log4net;
 using MediaBrowser.Model.ApiClient;
@@ -25,7 +27,7 @@ using System;
 using System.Diagnostics;
 using System.Threading;
 
-namespace EmbyExternalPlayerLauncher.Emby
+namespace EmbyExternalPlayerLauncher.ServerConnect
 {
     public class ProgressReporter
     {
@@ -64,6 +66,7 @@ namespace EmbyExternalPlayerLauncher.Emby
                 stop = true;
                 Monitor.Pulse(monitor);
             }
+            reporterThread.Join();
         }
 
         private void ReportEmbyStatus()

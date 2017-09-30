@@ -1,6 +1,6 @@
 Emby External Player Launcher
 =============================
-Emby External Player Launcher (**E2PL**) is a small .NET 4.5.2 application that registers itself as a video player to an Emby server and launches/controls MPC-HC to actually handle video playback. I wrote E2PL because I wanted to be able to watch videos using MPC-HC while also keeping the progress synchronized to my Emby library.
+Emby External Player Launcher (**E2PL**) is a small .NET 4.6.1 application that registers itself as a video player to an Emby server and launches/controls MPC-HC to actually handle video playback. I wrote E2PL because I wanted to be able to watch videos using MPC-HC while also keeping the progress synchronized to my Emby library.
 E2PL is not affiliated with the Emby project.
 
 If you somehow ended up reading about E2PL but do not know what Emby is, check out the project's website:
@@ -20,7 +20,7 @@ E2PL makes use of third-party libraries, please see `CREDITS.txt`
 Setup
 -----
 ### Requirements
-* Windows system with .NET Framework 4.5.2 installed
+* Windows system with .NET Framework 4.6.1 installed
 * MPC-HC should be installed
 * A functional Emby server installation somewhere on the local network
 * Direct access to the video files - either on the same system or over the network using shared files/folders combined with the Emby server's *Shared network folder* path substitution feature

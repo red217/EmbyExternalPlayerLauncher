@@ -17,11 +17,12 @@
  *  along with Emby External Player Launcher.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Emby.ApiInteraction;
-using Emby.ApiInteraction.Cryptography;
-using Emby.ApiInteraction.Net;
-using Emby.ApiInteraction.WebSocket;
-using EmbyExternalPlayerLauncher.Emby.Logging;
+using Emby.ApiClient;
+using Emby.ApiClient.Cryptography;
+using Emby.ApiClient.Model;
+using Emby.ApiClient.Net;
+using Emby.ApiClient.WebSocket;
+using EmbyExternalPlayerLauncher.ServerConnect.Logging;
 using EmbyExternalPlayerLauncher.Players;
 using log4net;
 using MediaBrowser.Model.ApiClient;
@@ -29,10 +30,9 @@ using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Session;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace EmbyExternalPlayerLauncher.Emby
+namespace EmbyExternalPlayerLauncher.ServerConnect
 {
     public class EmbyPlayerConnector
     {
@@ -43,7 +43,7 @@ namespace EmbyExternalPlayerLauncher.Emby
         private string userName;
         private string password;
 
-        private IApiClient client;
+        private ApiClient client;
         private ConnectionManager conMgr;
         private ILogger logger = new EmbyLogger();
 
@@ -71,16 +71,24 @@ namespace EmbyExternalPlayerLauncher.Emby
             return true;
         }
 
-        public void Stop()
+        public async void Stop()
         {
-            //TODO: should the progress reporter be stopped here or not?
-            // it could be still active if the connector is stopped while playing
             log.Debug("Stopping Emby connector...");
             UnwireEmbyEvents();
-            client?.Dispose();
-            conMgr?.Dispose();
             progressReporter?.Stop();
+            //using Task.Run because client.Dispose() seems to deadlock otherwise
+            //it's unclear why it happens at this point
+            await Task.Run(() => client?.Dispose());
+            await Task.Run(() => conMgr?.Dispose());
             log.Info("Emby connector stopped.");
+        }
+
+        public void CheckWebSocket()
+        {
+            var connected = client.IsWebSocketConnected;
+            log.DebugFormat("WebSocket Check: {0}", connected);
+            if (!connected)
+                client.OpenWebSocket();
         }
 
         private void InitConMgr()
@@ -94,20 +102,19 @@ namespace EmbyExternalPlayerLauncher.Emby
 
             var clientCapabilities = new ClientCapabilities
             {
-                PlayableMediaTypes = new List<string> { "Video" },
+                PlayableMediaTypes = new string[] { "Video" },
                 SupportsContentUploading = false,
-                SupportsOfflineAccess = false,
                 SupportsPersistentIdentifier = false,
                 SupportsSync = false,
                 SupportsMediaControl = true,
-                SupportedCommands = new List<string> { "Play", "Playstate", "VolumeUp", "VolumeDown", "SetVolume", "ToggleMute" }
+                SupportedCommands = new string[] { "Play", "Playstate", "VolumeUp", "VolumeDown", "SetVolume", "ToggleMute" }
             };
 
             conMgr = new ConnectionManager(
                 logger,
                 new SimpleCredentialProvider(),
                 new NetworkConnection(logger),
-                new ServerLocator(logger),
+                new Emby.ApiClient.ServerLocator(logger),
                 "Emby External Player Launcher",
                 Utils.ApplicationVersion,
                 device,
@@ -120,6 +127,7 @@ namespace EmbyExternalPlayerLauncher.Emby
         {
             try
             {
+
                 var conRes = await (string.IsNullOrEmpty(EmbyAddress) ? conMgr.Connect() : conMgr.Connect(EmbyAddress));
 
                 if (conRes.State != ConnectionState.ServerSignIn)
@@ -127,7 +135,8 @@ namespace EmbyExternalPlayerLauncher.Emby
                     log.ErrorFormat("Connect failed because server replied with unexpected ConnectionState: {0}", conRes.State);
                     return false;
                 }
-                client = conRes.ApiClient;
+                client = (ApiClient) conRes.ApiClient;
+
                 var authRes = await client.AuthenticateUserAsync(userName, password);
             }
             catch (Exception ex)
@@ -240,6 +249,10 @@ namespace EmbyExternalPlayerLauncher.Emby
                         if (!player.Stop())
                             log.Error("Player Stop command failed.");
                         break;
+                    case PlaystateCommand.PlayPause:
+                        if (!player.PlayPause())
+                            log.Error("Player PlayPause command failed.");
+                        break;
                 }
             }
             catch (Exception ex)
@@ -248,7 +261,7 @@ namespace EmbyExternalPlayerLauncher.Emby
             }
         }
 
-        private void Client_PlayCommand(object sender, MediaBrowser.Model.Events.GenericEventArgs<PlayRequest> e)
+        private async void Client_PlayCommand(object sender, MediaBrowser.Model.Events.GenericEventArgs<PlayRequest> e)
         {
             try
             {
@@ -261,9 +274,10 @@ namespace EmbyExternalPlayerLauncher.Emby
 
                 var playReq = e.Argument;
                 var playingId = playReq.ItemIds[0]; //only playing 1 item is currently supported
-                playingItem = client.GetItemAsync(playingId, playReq.ControllingUserId).GetAwaiter().GetResult();
+                playingItem = await client.GetItemAsync(playingId, playReq.ControllingUserId);
+              
                 log.InfoFormat("Playing \"{0}\" from \"{1}\"", playingItem.Name, playingItem.Path);
-                if (player.Play(playingItem.Path, playingItem.ResumePositionTicks))
+                if (player.Play(playingItem.Path, playingItem.UserData.PlaybackPositionTicks))
                 {
                     log.Debug("Playback started.");
                     client.ReportPlaybackStartAsync(new PlaybackStartInfo
