@@ -47,6 +47,10 @@ namespace EmbyExternalPlayerLauncher.Players.MpcHc
         private string baseUrl;
         private object playerStoppingLock = new object();
 
+        //used to remember the last reported playback position
+        //this is returned when the MPC-HC process terminates
+        private long lastPosition;
+
         public MpcHcWebAdapter(string mpcHcPath, string mpcHcArgs, int mpcHcWebPort, int timeout = 2000)
         {
             this.mpcHcPath = mpcHcPath;
@@ -65,7 +69,11 @@ namespace EmbyExternalPlayerLauncher.Players.MpcHc
             if (mpcHcProc == null)
             {
                 log.Debug("MPC-HC already exited, returning Stopped status.");
-                return PlayerStopped;
+                return new PlayerStatus
+                {
+                    State = PlayerState.Stopped,
+                    Position = lastPosition
+                };
             }
             //TODO: do something about the scenario where the user clicks Stop in MPC-HC, doesn't close the player and starts a new video from Emby?
             // it's not really the intended use case for this application however...
@@ -78,7 +86,10 @@ namespace EmbyExternalPlayerLauncher.Players.MpcHc
                         http.Timeout = TimeSpan.FromMilliseconds(timeout);
                         using (var respStream = http.GetStreamAsync(baseUrl + VariablesPath).GetAwaiter().GetResult())
                         {
-                            return MpcHcWebParser.ParseStatusFromStream(respStream);
+                            var status = MpcHcWebParser.ParseStatusFromStream(respStream);
+                            if (status.State != PlayerState.None)
+                                lastPosition = status.Position;
+                            return status;
                         }
                     }
                 }
@@ -94,7 +105,11 @@ namespace EmbyExternalPlayerLauncher.Players.MpcHc
             }
 
             log.Info("Returning stopped status by default.");
-            return PlayerStopped;
+            return new PlayerStatus
+            {
+                State = PlayerState.Stopped,
+                Position = lastPosition
+            };
         }
 
         public bool Pause()
@@ -131,6 +146,7 @@ namespace EmbyExternalPlayerLauncher.Players.MpcHc
             {
                 var args = GetPlayerArgs(filePath, embyStartTicks);
                 mpcHcProc = Process.Start(mpcHcPath, args);
+                lastPosition = 0;
             }
             catch (Exception ex)
             {

@@ -72,7 +72,7 @@ namespace EmbyExternalPlayerLauncher.ServerConnect
         private void ReportEmbyStatus()
         {
             //used to report position on stop - by the time the reporter polls, the player might have closed already
-            long lastPosition = 0;
+            //long lastPosition = 0;
             //when MPC-HC is loading a file, its state is None;
             //This flag prevents the reporter from terminating before the player loads the file
             bool startedPlaying = false;
@@ -96,7 +96,7 @@ namespace EmbyExternalPlayerLauncher.ServerConnect
                         var stopInfo = new PlaybackStopInfo
                         {
                             ItemId = itemId,
-                            PositionTicks = (status.Position == 0 ? lastPosition : status.Position) * Utils.EmbyTicksPerMs
+                            PositionTicks = status.Position * Utils.EmbyTicksPerMs
                         };
                         Utils.IgnoreExceptions(() => embyClient.ReportPlaybackStoppedAsync(stopInfo).Wait());
                         OnPlayerStopped(EventArgs.Empty);
@@ -116,7 +116,7 @@ namespace EmbyExternalPlayerLauncher.ServerConnect
                         RepeatMode = RepeatMode.RepeatNone
                     };
                     Utils.IgnoreExceptions(() => embyClient.ReportPlaybackProgressAsync(progressInfo).Wait());
-                    lastPosition = status.Position;
+                    //lastPosition = status.Position;
                 }
 
                 stopwatch.Stop();
