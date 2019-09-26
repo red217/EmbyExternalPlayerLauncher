@@ -1,5 +1,5 @@
 ﻿/*
- *  Copyright © 2017 Andrei K.
+ *  Copyright © 2017-2019 Andrei K.
  *  
  *  This file is part of Emby External Player Launcher.
  *
