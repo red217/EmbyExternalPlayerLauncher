@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Emby External Player Launcher")]
-[assembly: AssemblyCopyright("Copyright ©  2017  Andrei K.")]
+[assembly: AssemblyCopyright("Copyright ©  2017-2019  Andrei K.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

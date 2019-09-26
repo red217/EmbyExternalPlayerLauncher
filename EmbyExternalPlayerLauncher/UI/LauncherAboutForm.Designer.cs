@@ -82,9 +82,9 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(275, 51);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(188, 17);
+            this.label2.Size = new System.Drawing.Size(225, 17);
             this.label2.TabIndex = 4;
-            this.label2.Text = "Copyright © 2017   Andrei K.";
+            this.label2.Text = "Copyright © 2017-2019   Andrei K.";
             // 
             // label4
             // 
