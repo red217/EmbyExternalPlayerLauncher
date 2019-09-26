@@ -74,6 +74,7 @@ namespace EmbyExternalPlayerLauncher.ServerConnect
             //used to report position on stop - by the time the reporter polls, the player might have closed already
             //long lastPosition = 0;
             //when MPC-HC is loading a file, its state is None;
+            //before playback starts properly, newer versions of MPC-HC may also report Paused or even Stopped
             //This flag prevents the reporter from terminating before the player loads the file
             bool startedPlaying = false;
 
@@ -86,7 +87,7 @@ namespace EmbyExternalPlayerLauncher.ServerConnect
 
                 if (!startedPlaying)
                 {
-                    startedPlaying = status.State != PlayerState.None;
+                    startedPlaying = status.State == PlayerState.Playing;
                 }
                 else
                 {

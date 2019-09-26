@@ -104,7 +104,7 @@ namespace EmbyExternalPlayerLauncher.Players.MpcHc
                 ProcessCleanup();
             }
 
-            log.Info("Returning stopped status by default.");
+            log.Info("Returning stopped status (position: " + lastPosition + ") by default.");
             return new PlayerStatus
             {
                 State = PlayerState.Stopped,
