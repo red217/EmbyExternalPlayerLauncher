@@ -55,9 +55,8 @@
     <SignManifests>false</SignManifests>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Emby.ApiClient, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MediaBrowser.ApiClient.3.1.0\lib\net46\Emby.ApiClient.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Emby.ApiClient">
+      <HintPath>..\..\Emby.ApiClient-master\Emby.ApiClient\bin\Release\net46\Emby.ApiClient.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
